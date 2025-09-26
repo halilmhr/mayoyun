@@ -34,13 +34,13 @@ const questionSchema = {
 
 export const generateTopicExplanation = async (grade: Grade, topic: string): Promise<string> => {
   try {
-    const prompt = `${grade}. sınıf matematik müfredatından '${topic}' konusunu, çocuklara uygun bir dille, açık ve anlaşılır şekilde anlat. Konuyu örneklerle destekle ve çocukların ilgisini çekecek bir anlatım tarzı kullan. Anlatım yaklaşık 2-3 paragraf olsun.`;
+    const prompt = `${grade}. sınıf matematik müfredatından '${topic}' konusunu, çocuklara uygun, eğlenceli ve çok kısa bir şekilde anlat. Maksimum 3-4 cümle kullan. Emojiler ekle ve çocukların dikkatini çekecek basit örnekler ver. Anlatım heyecanlı ve enerjik olsun!`;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
       config: {
-        temperature: 0.7,
+        temperature: 0.8,
       },
     });
 

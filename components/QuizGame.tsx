@@ -236,43 +236,45 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
           <p className="text-gray-600">{grade}. Sınıf Matematik</p>
         </div>
 
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 mb-6">
+        <div className="bg-gradient-to-r from-purple-100 via-pink-100 to-blue-100 rounded-xl p-6 mb-6 animate-pulse-subtle">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-semibold text-gray-800 flex items-center">
-              🧠 Konu Anlatımı
+            <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 flex items-center animate-bounce-slow">
+              ✨ Hadi Öğrenelim! ✨
             </h3>
             {speechService.isSupported() && (
               <button
                 onClick={handleSpeak}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-6 py-3 rounded-full font-bold text-lg transition-all transform hover:scale-110 shadow-lg ${
                   isSpeaking 
-                    ? 'bg-red-500 hover:bg-red-600 text-white' 
-                    : 'bg-green-500 hover:bg-green-600 text-white'
+                    ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white speaking-indicator' 
+                    : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white hover-lift'
                 }`}
               >
-                {isSpeaking ? '🔇 Durdur' : '🔊 Sesli Anlat'}
+                {isSpeaking ? '🔇 Dur!' : '🎵 Dinle!'}
               </button>
             )}
           </div>
           
-          <div className="bg-white rounded-lg p-4 text-gray-700 leading-relaxed">
-            {explanation.split('\n').map((paragraph, index) => (
-              <p key={index} className="mb-3 last:mb-0">
-                {paragraph}
-              </p>
-            ))}
+          <div className="bg-white rounded-xl p-6 text-gray-800 leading-relaxed shadow-inner border-l-4 border-gradient-to-b from-purple-500 to-pink-500">
+            <div className="text-xl font-medium space-y-2">
+              {explanation.split('\n').map((paragraph, index) => (
+                <p key={index} className="mb-3 last:mb-0 animate-fade-in-up" style={{animationDelay: `${index * 0.3}s`}}>
+                  {paragraph}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
 
         <div className="text-center">
           <button
             onClick={handleStartQuiz}
-            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-all transform hover:scale-105 shadow-lg"
+            className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 text-white font-bold py-5 px-12 rounded-full text-xl transition-all transform hover:scale-110 shadow-2xl animate-bounce-gentle"
           >
-            🎯 Teste Başla
+            🚀 Hadi Teste! 🎯
           </button>
-          <p className="text-gray-500 mt-2 text-sm">
-            Konu anlatımını dinledikten sonra teste başlayabilirsin!
+          <p className="text-gray-600 mt-4 text-lg font-medium animate-pulse">
+            Hazır mısın? Hemen teste başlayalım! 🌟
           </p>
         </div>
       </div>

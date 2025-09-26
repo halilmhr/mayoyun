@@ -44,9 +44,9 @@ export class SpeechService {
         utterance.voice = voice;
       }
       
-      // Configure speech settings
-      utterance.rate = 0.8; // Slightly slower for better comprehension
-      utterance.pitch = 1.1; // Slightly higher pitch for children
+      // Configure speech settings for children
+      utterance.rate = 0.9; // Slightly slower for better comprehension
+      utterance.pitch = 1.2; // Higher pitch for children - more engaging
       utterance.volume = 1;
 
       utterance.onend = () => resolve();
