@@ -164,6 +164,14 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
   if (loading) {
     return (
       <div className="text-center p-8">
+        <div className="mb-6">
+          <button 
+            onClick={onGameEnd}
+            className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+          >
+            ← Geri
+          </button>
+        </div>
         <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500 mx-auto"></div>
         <h3 className="text-2xl font-semibold text-gray-700 mt-6">Sorular Hazırlanıyor...</h3>
         <p className="text-gray-500">Yapay zeka senin için en iyi soruları seçiyor!</p>
@@ -174,6 +182,14 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
   if (error) {
     return (
       <div className="text-center p-8 bg-red-50 rounded-lg">
+        <div className="mb-4">
+          <button 
+            onClick={onGameEnd}
+            className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+          >
+            ← Geri
+          </button>
+        </div>
         <h3 className="text-2xl font-semibold text-red-700 mb-4">Oops! Bir Hata Oluştu</h3>
         <p className="text-red-600 mb-6">{error}</p>
         <button onClick={onGameEnd} className="bg-red-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-600 transition-colors">
@@ -186,6 +202,14 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
   if(questions.length === 0){
       return (
           <div className="text-center p-8">
+              <div className="mb-4">
+                <button 
+                  onClick={onGameEnd}
+                  className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+                >
+                  ← Geri
+                </button>
+              </div>
               <h3 className="text-2xl font-semibold text-gray-700">Sorular yüklenemedi.</h3>
               <button onClick={onGameEnd} className="mt-4 bg-blue-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors">
                   Konu Seçimine Geri Dön
@@ -200,6 +224,14 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
     const percentage = Math.round((score / questions.length) * 100);
     return (
       <div className="text-center animate-fade-in p-8">
+        <div className="mb-6">
+          <button 
+            onClick={onGameEnd}
+            className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+          >
+            ← Geri
+          </button>
+        </div>
         <h3 className="text-4xl font-bold text-gray-800 mb-4">Test Bitti!</h3>
         <div className="flex justify-center items-center text-6xl font-bold my-6 text-amber-500">
             {[...Array(score)].map((_, i) => <StarIcon key={`gold-${i}`} className="w-16 h-16 text-yellow-400" />)}
@@ -226,6 +258,12 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
   return (
     <div className="animate-fade-in">
         <div className="mb-6 flex justify-between items-center">
+            <button 
+              onClick={onGameEnd}
+              className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+            >
+              ← Geri
+            </button>
             <h2 className="text-xl font-bold text-gray-700">{topic.emoji} {topic.name}</h2>
             <div className="text-lg font-semibold text-gray-600 bg-gray-100 px-4 py-1 rounded-full">
                 Soru: {currentQuestionIndex + 1} / {questions.length}
