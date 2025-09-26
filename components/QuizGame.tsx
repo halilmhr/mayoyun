@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { Grade, Topic, Question } from '../types';
-import { generateRandomQuestions } from '../services/questionService';
+import { generateQuizQuestions } from '../services/geminiService';
 import { StarIcon } from './icons/StarIcon';
 
 // Let TypeScript know about MathJax on the window object
@@ -95,18 +95,14 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
     try {
       setLoading(true);
       setError(null);
-      
-      // Kısa bir bekleme süresi ekle (gerçekçi loading deneyimi için)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const fetchedQuestions = generateRandomQuestions(topic.id, 15);
+      const fetchedQuestions = await generateQuizQuestions(grade, topic.name);
       setQuestions(fetchedQuestions);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Bilinmeyen bir hata oluştu.');
     } finally {
       setLoading(false);
     }
-  }, [topic.id]);
+  }, [grade, topic.name]);
 
   useEffect(() => {
     fetchQuestions();
