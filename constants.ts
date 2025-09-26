@@ -7,7 +7,7 @@ export const GRADE_3_UNITS: Unit[] = [
     emoji: '🔢',
     color: 'bg-red-500',
     topics: [
-      { id: 'reading-writing-numbers-3', name: 'Doğal Sayıları Okuma, Yazma ve Ritmik Sayma', emoji: '✍️', color: 'bg-red-400' },
+      { id: 'reading-writing-numbers-3', name: 'Sayıları Okuma ve Yazma', emoji: '📖', color: 'bg-red-400' },
       { id: 'place-value-3', name: 'Basamak ve Basamak Değeri', emoji: '📊', color: 'bg-orange-400' },
       { id: 'rounding-comparing-ordering-3', name: 'Sayıları Yuvarlama, Karşılaştırma ve Sıralama', emoji: '🔄', color: 'bg-amber-400' },
       { id: 'patterns-3', name: 'Ritmik Sayma ve Sayı Örüntüsü', emoji: '📈', color: 'bg-yellow-400' },
