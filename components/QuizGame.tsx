@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { Grade, Topic, Question } from '../types';
-import { generateQuizQuestions, generateTopicExplanation } from '../services/geminiService';
-import { speechService } from '../services/speechService';
+import { generateQuizQuestions } from '../services/geminiService';
 import { StarIcon } from './icons/StarIcon';
 
 // Let TypeScript know about MathJax on the window object
@@ -23,15 +22,12 @@ interface QuizGameProps {
 
 const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [explanation, setExplanation] = useState<string>('');
-  const [gamePhase, setGamePhase] = useState<'explanation' | 'quiz'>('explanation');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [score, setScore] = useState(0);
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
 
   const playSound = useCallback((type: 'correct' | 'incorrect' | 'end') => {
@@ -95,16 +91,10 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
     }
   }, []);
 
-  const fetchExplanationAndQuestions = useCallback(async () => {
+  const fetchQuestions = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
-      // First get explanation
-      const topicExplanation = await generateTopicExplanation(grade, topic.name);
-      setExplanation(topicExplanation);
-      
-      // Then get questions
       const fetchedQuestions = await generateQuizQuestions(grade, topic.name);
       setQuestions(fetchedQuestions);
     } catch (err) {
@@ -115,8 +105,8 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
   }, [grade, topic.name]);
 
   useEffect(() => {
-    fetchExplanationAndQuestions();
-  }, [fetchExplanationAndQuestions]);
+    fetchQuestions();
+  }, [fetchQuestions]);
 
   useEffect(() => {
     if (window.MathJax && !loading && questions.length > 0) {
@@ -149,30 +139,7 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
     setSelectedAnswer(null);
     setIsAnswered(false);
     setScore(0);
-    setGamePhase('explanation');
-    fetchExplanationAndQuestions();
-  };
-
-  const handleStartQuiz = () => {
-    speechService.stop();
-    setIsSpeaking(false);
-    setGamePhase('quiz');
-  };
-
-  const handleSpeak = async () => {
-    if (isSpeaking) {
-      speechService.stop();
-      setIsSpeaking(false);
-    } else {
-      try {
-        setIsSpeaking(true);
-        await speechService.speak(explanation);
-        setIsSpeaking(false);
-      } catch (error) {
-        console.error('Speech error:', error);
-        setIsSpeaking(false);
-      }
-    }
+    fetchQuestions();
   };
 
 
@@ -198,8 +165,8 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
     return (
       <div className="text-center p-8">
         <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500 mx-auto"></div>
-        <h3 className="text-2xl font-semibold text-gray-700 mt-6">İçerik Hazırlanıyor...</h3>
-        <p className="text-gray-500">Yapay zeka senin için konu anlatımı ve soruları hazırlıyor!</p>
+        <h3 className="text-2xl font-semibold text-gray-700 mt-6">Sorular Hazırlanıyor...</h3>
+        <p className="text-gray-500">Yapay zeka senin için en iyi soruları seçiyor!</p>
       </div>
     );
   }
@@ -219,7 +186,7 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
   if(questions.length === 0){
       return (
           <div className="text-center p-8">
-              <h3 className="text-2xl font-semibold text-gray-700">İçerik yüklenemedi.</h3>
+              <h3 className="text-2xl font-semibold text-gray-700">Sorular yüklenemedi.</h3>
               <button onClick={onGameEnd} className="mt-4 bg-blue-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors">
                   Konu Seçimine Geri Dön
               </button>
@@ -227,59 +194,7 @@ const QuizGame: React.FC<QuizGameProps> = ({ grade, topic, onGameEnd }) => {
       );
   }
 
-  // Explanation phase
-  if (gamePhase === 'explanation') {
-    return (
-      <div className="max-w-4xl mx-auto p-6 bg-white">
-        <div className="text-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">{topic.name}</h2>
-          <p className="text-gray-600">{grade}. Sınıf Matematik</p>
-        </div>
 
-        <div className="bg-gradient-to-r from-purple-100 via-pink-100 to-blue-100 rounded-xl p-6 mb-6 animate-pulse-subtle">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 flex items-center animate-bounce-slow">
-              ✨ Hadi Öğrenelim! ✨
-            </h3>
-            {speechService.isSupported() && (
-              <button
-                onClick={handleSpeak}
-                className={`px-6 py-3 rounded-full font-bold text-lg transition-all transform hover:scale-110 shadow-lg ${
-                  isSpeaking 
-                    ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white speaking-indicator' 
-                    : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white hover-lift'
-                }`}
-              >
-                {isSpeaking ? '🔇 Dur!' : '🎵 Dinle!'}
-              </button>
-            )}
-          </div>
-          
-          <div className="bg-white rounded-xl p-6 text-gray-800 leading-relaxed shadow-inner border-l-4 border-gradient-to-b from-purple-500 to-pink-500">
-            <div className="text-xl font-medium space-y-2">
-              {explanation.split('\n').map((paragraph, index) => (
-                <p key={index} className="mb-3 last:mb-0 animate-fade-in-up" style={{animationDelay: `${index * 0.3}s`}}>
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="text-center">
-          <button
-            onClick={handleStartQuiz}
-            className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 text-white font-bold py-5 px-12 rounded-full text-xl transition-all transform hover:scale-110 shadow-2xl animate-bounce-gentle"
-          >
-            🚀 Hadi Teste! 🎯
-          </button>
-          <p className="text-gray-600 mt-4 text-lg font-medium animate-pulse">
-            Hazır mısın? Hemen teste başlayalım! 🌟
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   if (currentQuestionIndex >= questions.length) {
     const percentage = Math.round((score / questions.length) * 100);
